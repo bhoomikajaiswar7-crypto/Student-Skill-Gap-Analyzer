@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillPath | Student Skill Gap Analyzer</title>
+
+<style>
+:root {
+    --purple: #6842b8;
+    --deep: #4e2c91;
+    --light: #f4efff;
+    --ink: #29243a;
+    --muted: #716c80;
+    --line: #e8e1f3;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #6554c8, #9471d4);
+    min-height: 100vh;
+    color: var(--ink);
+}
+
+.wrap {
+    width: min(1100px, 92%);
+    margin: auto;
+    padding: 24px 0 35px;
+}
+
+header {
+    color: white;
+    margin-bottom: 24px;
+}
+
+.brand {
+    font-size: 27px;
+    font-weight: 800;
+}
+
+.brand small {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.panel {
+    background: white;
+    border-radius: 22px;
+    padding: 35px;
+    box-shadow: 0 18px 55px #30205b35;
+}
+
+h1 {
+    font-size: 34px;
+    color: var(--deep);
+    margin-bottom: 10px;
+}
+
+h2 {
+    color: var(--deep);
+    margin-bottom: 12px;
+}
+
+p {
+    color: var(--muted);
+    line-height: 1.65;
+}
+
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 10px;
+    padding: 13px 21px;
+    background: var(--purple);
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn:hover {
+    background: var(--deep);
+    transform: translateY(-2px);
+}
+
+.btn.alt {
+    background: #eee8fa;
+    color: var(--deep);
+}
+
+.btn.alt:hover {
+    background: #ded2f3;
+}
+
+/* HOME PAGE */
+
+.home-hero {
+    text-align: center;
+    padding: 35px 10px 25px;
+}
+
+.eyebrow {
+    display: inline-block;
+    background: var(--light);
+    color: var(--purple);
+    padding: 8px 15px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 18px;
+}
+
+.home-hero p {
+    max-width: 680px;
+    margin: 15px auto 25px;
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.feature {
+    background: #faf8ff;
+    border: 1px solid var(--line);
+    padding: 22px;
+    border-radius: 14px;
+}
+
+.feature .emoji {
+    font-size: 28px;
+}
+
+.feature h3 {
+    color: var(--deep);
+    margin: 10px 0 7px;
+}
+
+/* PROGRESS */
+
+.steps {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+}
+
+.step {
+    flex: 1;
+    text-align: center;
+    padding: 10px 5px;
+    border-bottom: 3px solid var(--line);
+    color: #999;
+    font-size: 12px;
+}
+
+.step.active {
+    color: var(--deep);
+    border-color: var(--purple);
+    font-weight: bold;
+}
+
+/* FORM */
+
+form {
+    margin-top: 22px;
+}
+
+form > label {
+    display: block;
+    font-weight: 700;
+    font-size: 14px;
+    margin: 20px 0 9px;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #dcd5e8;
+    border-radius: 10px;
+    font: inherit;
+    outline: none;
+}
+
+input:focus,
+textarea:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px #6842b81a;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 95px;
+}
+
+.hint {
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+/* LEVEL OPTIONS - SEPARATE LINES */
+
+.level-options {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.level-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fcfbff;
+    cursor: pointer;
+}
+
+.level-option input {
+    accent-color: var(--purple);
+    width: 17px;
+    height: 17px;
+}
+
+/* TARGET CAREER OPTIONS */
+
+.career-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.career-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    cursor: pointer;
+    background: #fcfbff;
+    transition: 0.2s;
+}
+
+.career-option input {
+    accent-color: var(--purple);
+}
+
+.career-option:has(input:checked) {
+    border-color: var(--purple);
+    background: var(--light);
+    color: var(--deep);
+}
+
+.actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+}
+
+.matched-status {
+    color: #16834f;
+}
+
+.missing-status {
+    color: #b76a17;
+}
+
+/* PART 2 CONTINUES BELOW */
+</style>
+</head>
+
+<body>
+<div class="wrap" data-has-result="{{ 'true' if result else 'false' }}"></div>
+
+<header>
+    <div class="brand">
+        💜 SkillPath
+        <small>STUDENT CAREER DEVELOPMENT</small>
+    </div>
+</header>
+
+<main class="panel">
+
+<!-- HOME SCREEN -->
+
+<section id="homeScreen" class="screen active">
+
+    <div class="home-hero">
+
+        <div class="eyebrow">
+            YOUR CAREER JOURNEY STARTS HERE
+        </div>
+
+        <h1>Student Skill Gap Analyzer</h1>
+
+        <p>
+            Discover your current skills, identify the skills
+            required for your dream career and get a personalised
+            learning roadmap to improve your career readiness.
+        </p>
+
+        <button class="btn" type="button"
+                onclick="showScreen('assessmentScreen')">
+            Start Skill Assessment →
+        </button>
+
+    </div>
+
+    <div class="features">
+
+        <div class="feature">
+            <div class="emoji">🎯</div>
+            <h3>Skill Analysis</h3>
+            <p>Compare your current skills with your chosen career.</p>
+        </div>
+
+        <div class="feature">
+            <div class="emoji">📊</div>
+            <h3>Skill Breakdown</h3>
+            <p>Understand your strengths and missing skills.</p>
+        </div>
+
+        <div class="feature">
+            <div class="emoji">🗺️</div>
+            <h3>Learning Roadmap</h3>
+            <p>Get recommendations to improve your skills.</p>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ASSESSMENT SCREEN -->
+
+<section id="assessmentScreen" class="screen">
+
+    <div class="steps">
+        <div class="step active">1. Assessment</div>
+        <div class="step">2. Results</div>
+        <div class="step">3. Roadmap</div>
+    </div>
+
+    <h1>Skill Assessment</h1>
+
+    <p>
+        Enter your details and select your target career
+        to analyse your skill gap.
+    </p>
+
+    <form method="POST" action="/">
+
+        <label for="name">Your Name</label>
+
+        <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Enter your full name"
+            required
+        >
+
+        <label for="skills">Your Current Skills</label>
+
+        <textarea
+            id="skills"
+            name="skills"
+            placeholder="Example: Python, SQL, Excel"
+            required
+        ></textarea>
+
+        <p class="hint">
+            Enter multiple skills separated by commas.
+        </p>
+
+
+        <!-- SKILL LEVEL -->
+
+        <label>Your Skill Level</label>
+
+        <div class="level-options">
+
+            <label class="level-option">
+                <input type="radio" name="level"
+                       value="Beginner" checked>
+                <span>🌱 Beginner</span>
+            </label>
+
+            <label class="level-option">
+                <input type="radio" name="level"
+                       value="Intermediate">
+                <span>📘 Intermediate</span>
+            </label>
+
+            <label class="level-option">
+                <input type="radio" name="level"
+                       value="Advanced">
+                <span>🚀 Advanced</span>
+            </label>
+
+        </div>
+
+
+        <!-- TARGET CAREER -->
+
+        <label>Select Your Target Job</label>
+
+        <div class="career-grid">
+
+            <label class="career-option">
+                <input type="radio" name="target_job"
+                       value="data analyst" checked>
+                <span>📊 Data Analyst</span>
+            </label>
+
+            <label class="career-option">
+                <input type="radio" name="target_job"
+                       value="web developer">
+                <span>💻 Web Developer</span>
+            </label>
+
+            <label class="career-option">
+                <input type="radio" name="target_job"
+                       value="software developer">
+                <span>🧑‍💻 Software Developer</span>
+            </label>
+
+            <label class="career-option">
+                <input type="radio" name="target_job"
+                       value="data scientist">
+                <span>🤖 Data Scientist</span>
+            </label>
+
+        </div>
+
+        <div class="actions">
+
+            <button class="btn alt" type="button"
+                    onclick="showScreen('homeScreen')">
+                ← Back
+            </button>
+
+            <button class="btn" type="submit">
+                Analyse My Skills →
+            </button>
+
+        </div>
+
+    </form>
+
+</section>
+
+<!-- RESULTS SCREEN -->
+
+{% if result %}
+
+<section id="resultsScreen" class="screen">
+
+    <div class="steps">
+        <div class="step">1. Assessment</div>
+        <div class="step active">2. Results</div>
+        <div class="step">3. Roadmap</div>
+    </div>
+
+    <div style="text-align:center; padding:15px 0;">
+
+        <h1>Your Skill Analysis 🎉</h1>
+
+        <p>Your personalised career readiness report.</p>
+
+        <div style="margin:20px 0;">
+
+            <span style="
+                display:inline-block;
+                background:#f4efff;
+                color:#4e2c91;
+                padding:10px 16px;
+                border-radius:25px;
+                margin:5px;
+                font-weight:bold;">
+                👤 {{ result.name or "Student" }}
+            </span>
+
+            <span style="
+                display:inline-block;
+                background:#f4efff;
+                color:#4e2c91;
+                padding:10px 16px;
+                border-radius:25px;
+                margin:5px;
+                font-weight:bold;">
+                {{ result.career_label }}
+            </span>
+
+            <span style="
+                display:inline-block;
+                background:#f4efff;
+                color:#4e2c91;
+                padding:10px 16px;
+                border-radius:25px;
+                margin:5px;
+                font-weight:bold;">
+                Level: {{ result.level }}
+            </span>
+
+        </div>
+
+        <div style="
+            width:145px;
+            height:145px;
+            border:9px solid #8060ca;
+            background:#f5f0ff;
+            border-radius:50%;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            margin:20px auto;
+            color:#4e2c91;">
+
+            <strong style="font-size:35px;">
+                {{ result.score }}%
+            </strong>
+
+            <span style="font-size:12px;">
+                Skill Match
+            </span>
+
+        </div>
+
+        <span style="
+            display:inline-block;
+            background:#eee8fa;
+            color:#4e2c91;
+            padding:9px 18px;
+            border-radius:25px;
+            font-weight:bold;">
+            {{ result.status }}
+        </span>
+
+    </div>
+
+
+    <!-- SKILL STATISTICS -->
+
+    <div class="features">
+
+        <div class="feature">
+            <h2>{{ result.matched|length }}</h2>
+            <h3>✓ Matched Skills</h3>
+        </div>
+
+        <div class="feature">
+            <h2>{{ result.missing|length }}</h2>
+            <h3>! Skills to Improve</h3>
+        </div>
+
+        <div class="feature">
+            <h2>{{ result.breakdown|length }}</h2>
+            <h3>Required Skills</h3>
+        </div>
+
+    </div>
+
+
+    <!-- PERSONALISED FEEDBACK -->
+
+    <div style="
+        background:#f8f5ff;
+        border-left:5px solid #6842b8;
+        padding:20px;
+        border-radius:10px;
+        margin:25px 0;">
+
+        <h2>💬 Personalised Feedback</h2>
+
+        <p>{{ result.feedback }}</p>
+
+    </div>
+
+
+    <!-- SKILL BREAKDOWN -->
+
+    <h2>📊 Skill Breakdown</h2>
+
+    <p>
+        Here is a detailed comparison of your skills
+        with your selected career requirements.
+    </p>
+
+    <div style="overflow-x:auto; margin-top:15px;">
+
+        <table style="
+            width:100%;
+            border-collapse:collapse;
+            font-size:14px;">
+
+            <thead>
+                <tr style="background:#f4efff; color:#4e2c91;">
+
+                    <th style="padding:13px; text-align:left;">
+                        Required Skill
+                    </th>
+
+                    <th style="padding:13px; text-align:left;">
+                        Status
+                    </th>
+
+                    <th style="padding:13px; text-align:left;">
+                        Your Level
+                    </th>
+
+                    <th style="padding:13px; text-align:left;">
+                        Score Weight
+                    </th>
+
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for item in result.breakdown %}
+
+                <tr style="border-bottom:1px solid #e8e1f3;">
+
+                    <td style="padding:13px;">
+                        {{ item.skill }}
+                    </td>
+
+                    <td class="{% if item.matched %}matched-status{% else %}missing-status{% endif %}"
+    style="padding:13px; font-weight:bold;">
+
+                        {{ '✓ ' if item.matched else '• ' }}
+                        {{ item.status }}
+
+                    </td>
+
+                    <td style="padding:13px;">
+                        {{ item.level }}
+                    </td>
+
+                    <td style="padding:13px;">
+                        {{ item.weight }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- MATCHED AND MISSING SKILLS -->
+
+    <div class="features">
+
+        <div class="feature">
+
+            <h3 style="color:#16834f;">
+                ✓ Your Matched Skills
+            </h3>
+
+            {% if result.matched %}
+
+                {% for skill in result.matched %}
+
+                    <p>✓ {{ skill|title }}</p>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p>No matched skills yet.</p>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="feature">
+
+            <h3 style="color:#b76a17;">
+                ! Skills You Need to Improve
+            </h3>
+
+            {% if result.missing %}
+
+                {% for skill in result.missing %}
+
+                    <p>• {{ skill|title }}</p>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p>Excellent! All core skills are matched.</p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <div class="actions">
+
+        <a href="{{ url_for('download_report') }}" class="btn">
+            📄 Download PDF Report
+        </a>
+
+        <button class="btn" type="button"
+                onclick="showScreen('roadmapScreen')">
+            View Learning Roadmap →
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- LEARNING ROADMAP -->
+
+<section id="roadmapScreen" class="screen">
+
+    <div class="steps">
+        <div class="step">1. Assessment</div>
+        <div class="step">2. Results</div>
+        <div class="step active">3. Roadmap</div>
+    </div>
+
+    <h1>🗺️ Your Learning Roadmap</h1>
+
+    <p>
+        Your personalised learning plan for
+        {{ result.career_label }}.
+    </p>
+
+    <div style="
+        background:#f4efff;
+        padding:20px;
+        border-radius:12px;
+        margin:20px 0;">
+
+        <h3 style="color:#4e2c91;">
+            Your Next Career Goal
+        </h3>
+
+        <p>
+            Focus on the following skills to improve
+            your career readiness.
+        </p>
+
+    </div>
+
+
+    {% if result.recommendations %}
+
+        {% for item in result.recommendations %}
+
+        <div style="
+            display:flex;
+            gap:15px;
+            padding:18px;
+            margin:14px 0;
+            background:#faf8ff;
+            border:1px solid #e8e1f3;
+            border-radius:12px;">
+
+            <div style="
+                width:35px;
+                height:35px;
+                flex-shrink:0;
+                border-radius:50%;
+                background:#6842b8;
+                color:white;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-weight:bold;">
+
+                {{ loop.index }}
+
+            </div>
+
+            <div>
+
+                <h3 style="color:#4e2c91;">
+                    {{ item.skill }}
+                </h3>
+
+                <p>{{ item.description }}</p>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div style="
+            background:#f4efff;
+            padding:22px;
+            border-radius:12px;
+            margin:20px 0;">
+
+            <h2>🎉 Congratulations!</h2>
+
+            <p>
+                You have matched all the listed core skills.
+                Now focus on advanced projects and practical experience.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+
+    <div class="actions">
+
+        <button class="btn alt" type="button"
+                onclick="showScreen('resultsScreen')">
+            ← Back to Results
+        </button>
+
+        <a href="{{ url_for('download_report') }}" class="btn">
+            📄 Download PDF Report
+        </a>
+
+        <a href="{{ url_for('home') }}" class="btn alt">
+            New Assessment
+        </a>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+</main>
+
+<footer style="
+    text-align:center;
+    color:white;
+    padding:22px 0;
+    font-size:13px;">
+
+    © 2026 SkillPath | Student Skill Gap Analyzer
+
+</footer>
+
+</div>
+
+
+<!-- JAVASCRIPT -->
+
+<script>
+
+function showScreen(screenId) {
+
+    document.querySelectorAll(".screen").forEach(function(screen) {
+        screen.classList.remove("active");
+    });
+
+    const selectedScreen = document.getElementById(screenId);
+
+    if (selectedScreen) {
+        selectedScreen.classList.add("active");
+    }
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+// Open correct screen after page loads
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    const page = document.querySelector(".wrap");
+    const hasResult = page.dataset.hasResult === "true";
+
+    if (hasResult) {
+        showScreen("resultsScreen");
+    } else {
+        showScreen("homeScreen");
+    }
+
+});
+
+</script>
+
+</body>
+</html>
